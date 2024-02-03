@@ -28,18 +28,19 @@ void CentralWarehouse::Link(LocalStore*& newStore) {
 
 void CentralWarehouse::PrintStores() {
 	std::cout << "Stores Connected to Warehouse " << data << ": \n";
+
 	LocalStore* temp = edgeCase;
-	while (temp->next) {
+    if (temp) while (temp->next) {
 		std::cout << temp->data << " ";
 		temp = temp->next;
 	}
-	std::cout << temp->data;
+	if (temp) std::cout << temp->data;
 	std::cout << "\n";
 }
 
 void CentralWarehouse::PrintAll() {
 	CentralWarehouse* temp = this;
-	while (temp->next) {
+	if (temp->next) while (temp->next) {
 		temp->PrintStores(); 
 		temp = temp->next;
 	}
@@ -78,20 +79,18 @@ char CentralWarehouse::Name() {
 
 CentralWarehouse::~CentralWarehouse() {
 	CentralWarehouse* temp = this;
-	CentralWarehouse* tempNext = next;
-	LocalStore* tempStore = edgeCase;
-	LocalStore* tempNextStore = edgeCase->next;
 
-	while (tempNext) {
-		while (tempNextStore) {
+	while (temp) {
+		LocalStore* tempStore = temp->edgeCase;
+
+		while (tempStore) {
+			LocalStore* tempNextStore = tempStore->next;
 			delete tempStore;
 			tempStore = tempNextStore;
-			tempNextStore = tempStore->next;
 		}
-		delete tempStore;
+
+		CentralWarehouse* tempNext = temp->next;
 		delete temp;
 		temp = tempNext;
-		tempNext = temp->next;
 	}
-	delete temp;
 }
